@@ -1,20 +1,11 @@
-// src/lost-pets.tsx
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 
-// Import the local images
-const lostPetsData = [
-  { id: '1', name: 'Bella', description: 'Missing since last night near the park', image: require('../assets/PetImages/cat.jpg') },
-  { id: '2', name: 'Max', description: 'Lost in the city center', image: require('../assets/PetImages/dog1.jpg') },
-  { id: '3', name: 'Luna', description: 'Lost in the neighborhood', image: require('../assets/PetImages/cat2.jpg') },
-  // Add more posts here as needed
-];
-
-const LostPets = () => {
+const LostPets = ({ pets }) => {
   const renderItem = ({ item }) => (
     <View style={styles.post}>
-      <Image source={item.image} style={styles.petImage} />
-      <Text style={styles.petName}>{item.name}</Text>
+      <Image source={require('../assets/PetImages/cat.jpg')} style={styles.petImage} />
+      <Text style={styles.petName}>{item.petName}</Text>
       <Text>{item.description}</Text>
     </View>
   );
@@ -23,9 +14,9 @@ const LostPets = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Lost Pets</Text>
       <FlatList
-        data={lostPetsData}
+        data={pets}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );

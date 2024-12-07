@@ -1,55 +1,26 @@
-// src/post-pet.tsx
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Image, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState } from 'react';
+import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
-const PostPet = () => {
+const PostPet = ({ onPost }) => {
   const [petName, setPetName] = useState('');
   const [description, setDescription] = useState('');
-  const [imageUri, setImageUri] = useState<string | null>(null);
-  const [hasPermission, setHasPermission] = useState(false);
-
-  // Request media library permission when the component mounts
-  useEffect(() => {
-    const getPermission = async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      setHasPermission(status === 'granted');
-    };
-
-    getPermission();
-  }, []);
+  const [petType, setPetType] = useState('lost'); // 'lost' or 'found'
 
   const handlePost = () => {
-    if (!petName || !description || !imageUri) {
-      Alert.alert('Error', 'Please fill in all fields and upload a photo');
+    if (!petName || !description) {
+      Alert.alert('Error', 'Please fill in all fields');
     } else {
-      console.log('Pet Posted:', petName, description, imageUri);
-      // Handle posting logic here (store data in a database or API)
-    }
-  };
-
-  const pickImage = async () => {
-    // Check if permission is granted
-    if (!hasPermission) {
-      Alert.alert('Permission Required', 'You need to grant permission to access the photo library.');
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: [ImagePicker.MediaType.IMAGE], // Specify we only want images
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setImageUri(result.uri);
+      onPost({ petName, description, petType });
+      setPetName('');
+      setDescription('');
+      setPetType('lost'); // Reset to lost by default
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Post a Lost/Found Pet</Text>
+      <Text style={styles.title}>Post a Pet</Text>
       <TextInput
         style={styles.input}
         placeholder="Pet Name"
@@ -62,11 +33,20 @@ const PostPet = () => {
         value={description}
         onChangeText={setDescription}
       />
-      
-      {imageUri && <Image source={{ uri: imageUri }} style={styles.petImage} />}
-      
-      <Button title="Pick a Pet Picture" onPress={pickImage} />
-      <Button title="Post Pet" onPress={handlePost} />
+
+      <Text style={styles.selectText}>Select Pet Type:</Text>
+      <Picker
+        selectedValue={petType}
+        style={styles.picker}
+        onValueChange={(itemValue) => setPetType(itemValue)}>
+        <Picker.Item label="Lost" value="lost" />
+        <Picker.Item label="Found" value="found" />
+      </Picker>
+
+      {/* Post Pet Button now below the picker */}
+      <View style={styles.buttonContainer}>
+        <Button title="Post Pet" onPress={handlePost} />
+      </View>
     </View>
   );
 };
@@ -86,11 +66,18 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
   },
-  petImage: {
+  picker: {
+    height: 50,
     width: '100%',
-    height: 200,
-    borderRadius: 8,
+    marginBottom: 20, // Ensures space between picker and button
+  },
+  selectText: {
+	marginTop: 10,
     marginBottom: 10,
+    fontSize: 16,
+  },
+  buttonContainer: {
+    marginTop: 150,  // Adds space between the Picker and Button
   },
 });
 

@@ -1,20 +1,11 @@
-// src/found-pets.tsx
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 
-// Import the local images
-const foundPetsData = [
-  { id: '1', name: 'Charlie', description: 'Found near the grocery store', image: require('../assets/PetImages/dog2.jpg') },
-  { id: '2', name: 'Luna', description: 'Found running in the neighborhood', image: require('../assets/PetImages/dog3.jpg') },
-  { id: '3', name: 'Bella', description: 'Found near the park', image: require('../assets/PetImages/cat3.jpg') },
-  // Add more posts here as needed
-];
-
-const FoundPets = () => {
+const FoundPets = ({ pets }) => {
   const renderItem = ({ item }) => (
     <View style={styles.post}>
-      <Image source={item.image} style={styles.petImage} />
-      <Text style={styles.petName}>{item.name}</Text>
+      <Image source={require('../assets/PetImages/dog1.jpg')} style={styles.petImage} />
+      <Text style={styles.petName}>{item.petName}</Text>
       <Text>{item.description}</Text>
     </View>
   );
@@ -23,9 +14,9 @@ const FoundPets = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Found Pets</Text>
       <FlatList
-        data={foundPetsData}
+        data={pets}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );
@@ -64,3 +55,4 @@ const styles = StyleSheet.create({
 });
 
 export default FoundPets;
+
