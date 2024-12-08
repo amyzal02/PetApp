@@ -1,32 +1,52 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, TextInput, Button, StyleSheet, Text, Alert, Image } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Picker } from '@react-native-picker/picker'; // Correct import
 
 const PostPet = ({ onPost }) => {
   const [petName, setPetName] = useState('');
   const [description, setDescription] = useState('');
   const [petType, setPetType] = useState('lost'); // 'lost' or 'found'
+  const [selectedImage, setSelectedImage] = useState(null); // to store the selected image
+
+  // Function to handle image selection
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImage(result.uri); // Save the URI of the selected image
+    }
+  };
 
   const handlePost = () => {
     if (!petName || !description) {
       Alert.alert('Error', 'Please fill in all fields');
     } else {
-      onPost({ petName, description, petType });
+      onPost({ petName, description, petType, image: selectedImage });
       setPetName('');
       setDescription('');
-      setPetType('lost'); // Reset to lost by default
+      setPetType('lost');
+      setSelectedImage(null); // Reset image after posting
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Post a Pet</Text>
+      
+      {/* Pet Name Input */}
       <TextInput
         style={styles.input}
         placeholder="Pet Name"
         value={petName}
         onChangeText={setPetName}
       />
+      
+      {/* Pet Description Input */}
       <TextInput
         style={styles.input}
         placeholder="Description"
@@ -34,6 +54,15 @@ const PostPet = ({ onPost }) => {
         onChangeText={setDescription}
       />
 
+      {/* Optional Image Picker */}
+      <View style={styles.imagePickerContainer}>
+        <Button title="Pick a Pet Picture (Optional)" onPress={pickImage} />
+        {selectedImage && (
+          <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
+        )}
+      </View>
+
+      {/* Pet Type Selector */}
       <Text style={styles.selectText}>Select Pet Type:</Text>
       <Picker
         selectedValue={petType}
@@ -43,7 +72,8 @@ const PostPet = ({ onPost }) => {
         <Picker.Item label="Found" value="found" />
       </Picker>
 
-      {/* Post Pet Button now below the picker */}
+      
+      {/* Post Pet Button */}
       <View style={styles.buttonContainer}>
         <Button title="Post Pet" onPress={handlePost} />
       </View>
@@ -69,15 +99,24 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: '100%',
-    marginBottom: 20, // Ensures space between picker and button
+    marginBottom: 20,
   },
   selectText: {
-	marginTop: 10,
-    marginBottom: 10,
+    //marginBottom: 10,
     fontSize: 16,
   },
   buttonContainer: {
-    marginTop: 150,  // Adds space between the Picker and Button
+    marginTop: 150,  // Adds space between Picker and Button
+  },
+  imagePickerContainer: {
+    marginBottom: 20,  // Space between Image Picker and Post Button
+  },
+  imagePreview: {
+    width: 200,
+    height: 200,
+    marginTop: 10,
+    borderRadius: 10,
+    resizeMode: 'cover',
   },
 });
 
