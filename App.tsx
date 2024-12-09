@@ -125,15 +125,15 @@ const App = () => {
 
 						}}
 				/>
-
-				{/* Messages Page */}
+					
+				{/* Messages Page
 				<Tab.Screen
 					name="Messages"
 					component={Messages}
 					options={{ tabBarLabel: 'Messages',
 					tabBarIcon:() => (
 					<MaterialCommunityIcons name="android-messages" size={24} color="black" /> ),}}
-				/>
+				/> */}
 
 			</Tab.Navigator>
 		</NavigationContainer>
