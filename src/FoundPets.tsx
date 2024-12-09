@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import { Image as RNImage } from 'react-native';
 
 // Helper function to handle image URIs
@@ -13,12 +14,33 @@ const getImageUri = (image) => {
 const FoundPets = ({ pets }) => {
   const renderItem = ({ item }) => (
     <View style={styles.petCard}>
+		 <Text style={styles.petName}>{item.petName}</Text>
+      <Text style={styles.petDescription}>{item.description}</Text>
       <Image
         source={{ uri: getImageUri(item.image) }} // Handle both local and remote images
         style={styles.petImage}
       />
-      <Text style={styles.petName}>{item.petName}</Text>
-      <Text style={styles.petDescription}>{item.description}</Text>
+      {/* MapView to display the pet's location */}
+      {item.location && (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: item.location.latitude,
+            longitude: item.location.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+        >
+          <Marker
+            coordinate={{
+              latitude: item.location.latitude,
+              longitude: item.location.longitude,
+            }}
+            title={item.petName}
+            description="Last seen here"
+          />
+        </MapView>
+      )}
     </View>
   );
 
@@ -44,11 +66,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#333', 
+    color: '#333',
   },
   petCard: {
     marginBottom: 20,
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -75,6 +97,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
+	marginBottom: 20,
+  },
+  map: {
+    width: '100%', // Adjust map width to fit card
+    height: 200,
+    borderRadius: 8,
+    marginTop: 10,
   },
 });
 
