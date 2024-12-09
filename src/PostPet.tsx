@@ -18,7 +18,7 @@ const PostPet = ({ onPost }) => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setPetPhoto({ uri: result.assets.at(0).uri });
       setSelectedImage(result.assets.at(0).uri); // Save the URI of the selected image
     }
