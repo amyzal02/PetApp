@@ -1,13 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { Image as RNImage } from 'react-native';
+
+// Helper function to handle image URIs
+const getImageUri = (image) => {
+  if (typeof image === 'number') {
+    return RNImage.resolveAssetSource(image).uri;
+  }
+  return image;
+};
 
 const FoundPets = ({ pets }) => {
-  console.log(pets.petPhoto);
   const renderItem = ({ item }) => (
-    <View style={styles.post}>
-      <Image source={{ uri: item.image } } style={styles.petImage} />
+    <View style={styles.petCard}>
+      <Image
+        source={{ uri: getImageUri(item.image) }} // Handle both local and remote images
+        style={styles.petImage}
+      />
       <Text style={styles.petName}>{item.petName}</Text>
-      <Text>{item.description}</Text>
+      <Text style={styles.petDescription}>{item.description}</Text>
     </View>
   );
 
@@ -27,21 +38,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#333', 
   },
-  post: {
-    marginBottom: 15,
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+  petCard: {
+    marginBottom: 20,
+    backgroundColor: '#fff', 
+    borderRadius: 10,
     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 5,
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   petImage: {
     width: '100%',
@@ -52,8 +68,14 @@ const styles = StyleSheet.create({
   petName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
+  },
+  petDescription: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
 });
 
 export default FoundPets;
-

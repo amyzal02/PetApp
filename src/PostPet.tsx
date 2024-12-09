@@ -19,9 +19,6 @@ const PostPet = ({ onPost }) => {
     });
 
     if (!result.cancelled) {
-      console.log("image selected:", result.assets.at(0).uri);
-      //setPetPhoto(require('../assets/PetImages/dog1.jpg'));
-      //setPetPhoto(result.assets.at(0).uri); 
       setPetPhoto({ uri: result.assets.at(0).uri });
       setSelectedImage(result.assets.at(0).uri); // Save the URI of the selected image
     }
@@ -109,14 +106,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   selectText: {
-    //marginBottom: 10,
     fontSize: 16,
   },
   buttonContainer: {
-    marginTop: 150,  // Adds space between Picker and Button
+    marginTop: 150,  
   },
   imagePickerContainer: {
-    marginBottom: 20,  // Space between Image Picker and Post Button
+    marginBottom: 20,  
   },
   imagePreview: {
     width: 200,

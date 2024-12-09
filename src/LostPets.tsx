@@ -1,23 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList } from 'react-native';
+import { Image as RNImage } from 'react-native';
+
+// Helper function to get URI from `require()`
+const getImageUri = (image) => {
+  // If image is a local require, use resolveAssetSource to get URI
+  if (typeof image === 'number') {
+    return RNImage.resolveAssetSource(image).uri;
+  }
+  // If image is already a URI (e.g., from the camera roll), return it directly
+  return image;
+};
 
 const LostPets = ({ pets }) => {
-  console.log("pets: ", pets);
-  const renderItem = ({ item }) => (
-    <View style={styles.post}>
-      <Image source={{ uri: item.image }} style={styles.petImage} />
-      <Text style={styles.petName}>{item.petName}</Text>
-      <Text>{item.description}</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Lost Pets</Text>
       <FlatList
         data={pets}
-        renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.petCard}>
+            <Image
+              source={{ uri: getImageUri(item.image) }} // Handle both local and remote images
+              style={styles.petImage}
+            />
+            <Text style={styles.petName}>{item.petName}</Text>
+            <Text style={styles.petDescription}>{item.description}</Text>
+          </View>
+        )}
       />
     </View>
   );
@@ -26,22 +36,21 @@ const LostPets = ({ pets }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 15,
+    backgroundColor: '#f5f5f5', 
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  petCard: {
     marginBottom: 20,
-  },
-  post: {
-    marginBottom: 15,
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#fff', 
+    borderRadius: 10,
     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 5, 
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   petImage: {
     width: '100%',
@@ -52,6 +61,13 @@ const styles = StyleSheet.create({
   petName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
+  },
+  petDescription: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
 });
 

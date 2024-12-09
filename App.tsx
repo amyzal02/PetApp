@@ -8,19 +8,47 @@ import PostPet from './src/PostPet';
 import Messages from './src/Message';
 import Profile from './src/Profile';
 
-
 // Tab navigation setup
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const [lostPets, setLostPets] = useState([]);
-  const [foundPets, setFoundPets] = useState([]);
+  // Sample data for Lost and Found Pets
+  const [lostPets, setLostPets] = useState([
+    {
+      petName: 'Buddy',
+      description: 'A friendly dog looking for a new home.',
+      petType: 'lost',
+      image: require('./assets/PetImages/dog1.jpg')
 
+    },
+    {
+      petName: 'Mittens',
+      description: 'Missing cat, please help us find her.',
+      petType: 'lost',
+      image: require('./assets/PetImages/cat.jpg')
+    },
+  ]);
+  const [foundPets, setFoundPets] = useState([
+    {
+      petName: 'Fluffy',
+      description: 'Found this dog on the street, very friendly!',
+      petType: 'found',
+      image: require('./assets/PetImages/cat2.jpg')
+    },
+    {
+      petName: 'Whiskers',
+      description: 'Found this cat near my house, looks lost.',
+      petType: 'found',
+      image: require('./assets/PetImages/cat3.jpg')
+    },
+  ]);
+
+  // Handle the post submission
   const handlePost = (pet) => {
     if (pet.petType === 'lost') {
-      setLostPets((prevState) => [...prevState, pet]);
+      setLostPets((prevState) => [pet, ...prevState]);
     } else {
-      setFoundPets((prevState) => [...prevState, pet]);
+      setFoundPets((prevState) => [pet, ...prevState]);
     }
   };
 
