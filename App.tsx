@@ -11,6 +11,7 @@ import Profile from './src/Profile';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 // Tab navigation setup
 const Tab = createBottomTabNavigator();
@@ -66,7 +67,7 @@ const App = () => {
 					options={{
 						tabBarLabel: 'Post Pet',
 						tabBarIcon: () => (
-							<Ionicons name="paw-outline" size={24} color="black" />
+							<MaterialIcons name="post-add" size={24} color="black" />
 						),
 					}}
 				/>
@@ -76,23 +77,23 @@ const App = () => {
 					name="LostPets"
 					children={() => <LostPets pets={lostPets} />}
 					options={{
-						tabBarLabel: 'Lost Pets',
-						tabBarIcon: () => (
+						 tabBarLabel: 'Lost Pets',
+						 tabBarIcon: () => (
 							<Ionicons name="paw-outline" size={24} color="black" />
 						),
-					}}
+					 }}
 				/>
 
 				{/* Found Pets Feed */}
 				<Tab.Screen
 					name="FoundPets"
 					children={() => <FoundPets pets={foundPets} />}
-					options={{
+					options={{ 
 						tabBarLabel: 'Found Pets',
 						tabBarIcon: () => (
 							<Ionicons name="paw-outline" size={24} color="black" />
 						),
-					}}
+					 }}
 				/>
 
 				{/* Profile Page */}
@@ -100,23 +101,21 @@ const App = () => {
 					name="Profile"
 					component={Profile}
 					options={{
-						tabBarLabel: 'Profile',
-						tabBarIcon: () => (
-							<AntDesign name="profile" size={24} color="black" />
-						),
+						 tabBarLabel: 'Profile',
+						 tabBarIcon: () => (
+						 <AntDesign name="profile" size={24} color="black" />
+						 ),
 
-					}}
+						}}
 				/>
 
 				{/* Messages Page */}
 				<Tab.Screen
 					name="Messages"
 					component={Messages}
-					options={{
-						tabBarLabel: 'Messages',
-						tabBarIcon: () => (
-							<MaterialCommunityIcons name="android-messages" size={24} color="black" />),
-					}}
+					options={{ tabBarLabel: 'Messages',
+					tabBarIcon:() => (
+					<MaterialCommunityIcons name="android-messages" size={24} color="black" /> ),}}
 				/>
 
 			</Tab.Navigator>
