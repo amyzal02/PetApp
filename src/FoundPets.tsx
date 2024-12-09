@@ -5,7 +5,7 @@ const FoundPets = ({ pets }) => {
   console.log(pets.petPhoto);
   const renderItem = ({ item }) => (
     <View style={styles.post}>
-      <Image source={item.selectedImage} style={styles.petImage} />
+      <Image source={{ uri: item.image } } style={styles.petImage} />
       <Text style={styles.petName}>{item.petName}</Text>
       <Text>{item.description}</Text>
     </View>

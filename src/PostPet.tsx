@@ -21,7 +21,8 @@ const PostPet = ({ onPost }) => {
     if (!result.cancelled) {
       console.log("image selected:", result.assets.at(0).uri);
       //setPetPhoto(require('../assets/PetImages/dog1.jpg'));
-      setPetPhoto(result.assets.at(0).uri); 
+      //setPetPhoto(result.assets.at(0).uri); 
+      setPetPhoto({ uri: result.assets.at(0).uri });
       setSelectedImage(result.assets.at(0).uri); // Save the URI of the selected image
     }
   };
@@ -32,7 +33,7 @@ const PostPet = ({ onPost }) => {
     } else {
       console.log("selectedImage: ", selectedImage);
       console.log("petPhoto: ", petPhoto);
-      onPost({ petName, petPhoto, description, petType, image: selectedImage });
+      onPost({ petName, description, petType, image: selectedImage || petPhoto });
       setPetName('');
       setDescription('');
       setPetType('lost');
