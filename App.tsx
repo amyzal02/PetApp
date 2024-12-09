@@ -23,14 +23,23 @@ const App = () => {
 			petName: 'Buddy',
 			description: 'A friendly dog looking for a new home.',
 			petType: 'lost',
-			image: require('./assets/PetImages/dog1.jpg')
+			image: require('./assets/PetImages/dog1.jpg'),
+			location: {
+				latitude: 40.7128, 
+				longitude: -74.0060, 
+			  },
+
 
 		},
 		{
 			petName: 'Mittens',
 			description: 'Missing cat, please help us find her.',
 			petType: 'lost',
-			image: require('./assets/PetImages/cat.jpg')
+			image: require('./assets/PetImages/cat.jpg'),
+			location: {
+				latitude: 34.0522,  // Sample latitude (Los Angeles)
+				longitude: -118.2437,  // Sample longitude (Los Angeles)
+			  },
 		},
 	]);
 	const [foundPets, setFoundPets] = useState([
@@ -38,13 +47,21 @@ const App = () => {
 			petName: 'Fluffy',
 			description: 'Found this dog on the street, very friendly!',
 			petType: 'found',
-			image: require('./assets/PetImages/cat2.jpg')
+			image: require('./assets/PetImages/cat2.jpg'),
+			location: {
+				latitude: 51.5074,  // London
+				longitude: -0.1278,  // London
+			  },
 		},
 		{
 			petName: 'Whiskers',
 			description: 'Found this cat near my house, looks lost.',
 			petType: 'found',
-			image: require('./assets/PetImages/cat3.jpg')
+			image: require('./assets/PetImages/cat3.jpg'),
+			location: {
+				latitude: 40.7306,  // Chicago
+				longitude: -73.9352,  // Chicago
+			  },
 		},
 	]);
 
