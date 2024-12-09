@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker'; // Correct import
 
 const PostPet = ({ onPost }) => {
   const [petName, setPetName] = useState('');
+  const [petPhoto, setPetPhoto] = useState(require('../assets/PetImages/noimagefound.jpg')); // Default to dog1.jpg
   const [description, setDescription] = useState('');
   const [petType, setPetType] = useState('lost'); // 'lost' or 'found'
   const [selectedImage, setSelectedImage] = useState(null); // to store the selected image
@@ -18,7 +19,10 @@ const PostPet = ({ onPost }) => {
     });
 
     if (!result.cancelled) {
-      setSelectedImage(result.uri); // Save the URI of the selected image
+      console.log("image selected:", result.assets.at(0).uri);
+      //setPetPhoto(require('../assets/PetImages/dog1.jpg'));
+      setPetPhoto(result.assets.at(0).uri); 
+      setSelectedImage(result.assets.at(0).uri); // Save the URI of the selected image
     }
   };
 
@@ -26,7 +30,9 @@ const PostPet = ({ onPost }) => {
     if (!petName || !description) {
       Alert.alert('Error', 'Please fill in all fields');
     } else {
-      onPost({ petName, description, petType, image: selectedImage });
+      console.log("selectedImage: ", selectedImage);
+      console.log("petPhoto: ", petPhoto);
+      onPost({ petName, petPhoto, description, petType, image: selectedImage });
       setPetName('');
       setDescription('');
       setPetType('lost');

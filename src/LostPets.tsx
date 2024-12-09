@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 const LostPets = ({ pets }) => {
   const renderItem = ({ item }) => (
     <View style={styles.post}>
-      <Image source={require('../assets/PetImages/cat.jpg')} style={styles.petImage} />
+      <Image source={item.selectedImage} style={styles.petImage} />
       <Text style={styles.petName}>{item.petName}</Text>
       <Text>{item.description}</Text>
     </View>
