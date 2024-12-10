@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, Alert, TouchableOpacity, TextInput } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Image as RNImage } from 'react-native';
+import * as FileSystem from 'expo-file-system';
+import * as MailComposer from 'expo-mail-composer';
 
 // Helper function to get URI from `require()`
 const getImageUri = (image) => {
@@ -32,6 +34,51 @@ const FoundPets = ({ pets }) => {
     setPetComments(updatedComments);
     setNewComment(''); // Clear input field after adding comment
     setCommenterName(''); // Clear commenter name input
+  };
+
+  // sharing (email only)
+  const handleShare = (pet) => {
+    Alert.alert(
+      'Share via',
+      'Choose an option',
+      [
+        {
+          text: 'Email',
+          onPress: () => shareImageViaEmail(pet)
+        },
+        { text: 'Cancel' },
+        
+      ]
+    );
+    };
+  
+  const shareImageViaEmail = async (pet) => {
+    const imageUri = getImageUri(pet.image);
+    const fileUri = FileSystem.documentDirectory + 'pet-image.jpg';
+
+    // Download the image to local filesystem (needed to attach)
+    await FileSystem.downloadAsync(imageUri, fileUri);
+      
+  // Google Maps URL to be inserted in the Email
+  const googleMapsUrl = `https://www.google.com/maps?q=${pet.location.latitude},${pet.location.longitude}`;
+
+  const message = 
+		`Great news! A missing pet has been found. Do you know the owner of this lost pet?\n
+		Name: ${pet.petName}
+		Description: ${pet.description}
+		Found Location: ${pet.location.latitude}, ${pet.location.longitude}
+		You can view the location on Google Maps: ${googleMapsUrl}		
+		\n
+		Image Below`;
+
+  const email = {
+    subject: 'Lost Pet Found',
+    body: message,
+    attachments: [fileUri],
+  };
+
+  // I don't do anything with the result variable, but it's needed otherwise nothing happens.
+  const result = await MailComposer.composeAsync(email);
   };
 
   return (
@@ -69,6 +116,11 @@ const FoundPets = ({ pets }) => {
                 />
               </MapView>
             )}
+
+            {/* Share Button */}
+            <TouchableOpacity style={styles.shareButton} onPress={() => handleShare(item)}>
+              <Text style={styles.shareButtonText}>Share</Text>
+            </TouchableOpacity>
 
             {/* Comment Section */}
             <View style={styles.commentSection}>
@@ -213,6 +265,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  shareButton: {
+	  backgroundColor: '#007bff',
+	  padding: 10,
+	  borderRadius: 10,
+	  alignItems: 'center',
+	  marginTop: 10,
+	},
+	shareButtonText: {
+	  color: 'white',
+	  fontSize: 16,
+	  fontWeight: 'bold',
+	}
 });
 
 export default FoundPets;
