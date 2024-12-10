@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Linking } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Image as RNImage } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import * as MailComposer from 'expo-mail-composer';
 
 // Helper function to get URI from `require()`
 const getImageUri = (image) => {
@@ -9,6 +12,13 @@ const getImageUri = (image) => {
     return RNImage.resolveAssetSource(image).uri;
   }
   return image;
+};
+
+// Function to handle opening Google Maps with coordinates
+const openGoogleMaps = (latitude, longitude) => {
+	// Google Maps uses a very simple URL format that's easy 
+    const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    Linking.openURL(url).catch(err => console.error('Error opening Google Maps:', err));
 };
 
 const LostPets = ({ pets }) => {
@@ -33,6 +43,59 @@ const LostPets = ({ pets }) => {
     setNewComment(''); // Clear input field after adding comment
     setCommenterName(''); // Clear commenter name input
   };
+
+  // sharing (email or SMS)
+  const handleShare = (pet) => {
+	Alert.alert(
+		'Share via',
+		'Choose an option',
+		[
+			{
+				text: 'Email',
+				onPress: () => shareImageViaEmail(pet)
+			},
+			/*
+			Don't think I'm going to do SMS, can't find a good way to attach the image.
+			{
+				text: 'SMS',
+				onPress: () => Linking.openURL(`sms:?body=${encodeURIComponent(message)}`),
+			},
+			*/
+			{ text: 'Cancel' },
+			
+		]
+	);
+  };
+
+  const shareImageViaEmail = async (pet) => {
+    const imageUri = getImageUri(pet.image);
+    const fileUri = FileSystem.documentDirectory + 'pet-image.jpg';
+
+    // Download the image to local filesystem (needed to attach)
+    await FileSystem.downloadAsync(imageUri, fileUri);
+      
+	// Google Maps URL to be inserted in the Email
+	const googleMapsUrl = `https://www.google.com/maps?q=${pet.location.latitude},${pet.location.longitude}`;
+
+	const message = 
+		`Have you seen this missing pet?\n
+		Name: ${pet.petName}
+		Description: ${pet.description}
+		Last Seen Location: ${pet.location.latitude}, ${pet.location.longitude}
+		You can view the location on Google Maps: ${googleMapsUrl}		
+		\n
+		Image Below`;
+
+	const email = {
+		subject: 'Lost Pet Alert',
+		body: message,
+		attachments: [fileUri],
+	};
+
+	// I don't do anything with the result variable, but it's needed otherwise nothing happens.
+	const result = await MailComposer.composeAsync(email);
+  };
+
 
   return (
     <View style={styles.container}>
@@ -69,6 +132,11 @@ const LostPets = ({ pets }) => {
                 />
               </MapView>
             )}
+
+			{/* Share Button */}
+            <TouchableOpacity style={styles.shareButton} onPress={() => handleShare(item)}>
+              <Text style={styles.shareButtonText}>Share</Text>
+            </TouchableOpacity>
 
             {/* Comment Section */}
             <View style={styles.commentSection}>
@@ -213,6 +281,18 @@ const styles = StyleSheet.create({
 	  fontSize: 16,
 	  fontWeight: 'bold',
 	},
+	shareButton: {
+	  backgroundColor: '#007bff',
+	  padding: 10,
+	  borderRadius: 10,
+	  alignItems: 'center',
+	  marginTop: 10,
+	},
+	shareButtonText: {
+	  color: 'white',
+	  fontSize: 16,
+	  fontWeight: 'bold',
+	}
   });
   
 export default LostPets;
