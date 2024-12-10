@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { View, TextInput, Button, StyleSheet, Text, Alert, Image, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
@@ -38,6 +38,25 @@ const PostPet = ({ onPost }) => {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setPetPhoto({ uri: result.assets.at(0).uri });
+      setSelectedImage(result.assets.at(0).uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Camera access is required to take a photo.');
+      return;
+    }
+
+    let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
@@ -126,12 +145,16 @@ const PostPet = ({ onPost }) => {
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Pet Photo (Optional)</Text>
-          <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
-            <Text style={styles.imagePickerButtonText}>
-              {selectedImage ? 'Change Image' : 'Select Image'}
-            </Text>
-          </TouchableOpacity>
-
+          <View style={styles.photoButtons}>
+            <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
+              <Text style={styles.imagePickerButtonText}>
+                {selectedImage ? 'Change Image' : 'Select Image'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.imagePickerButton} onPress={takePhoto}>
+              <Text style={styles.imagePickerButtonText}>Take Photo</Text>
+            </TouchableOpacity>
+          </View>
           {selectedImage && <Image source={{ uri: selectedImage }} style={styles.imagePreview} />}
         </View>
 
@@ -215,12 +238,19 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
   },
+  photoButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
   imagePickerButton: {
     backgroundColor: '#C2D5B9',
     color: 'white',
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 5,
   },
   imagePickerButtonText: {
     color: '#333',
