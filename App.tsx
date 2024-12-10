@@ -32,6 +32,19 @@ const App = () => {
 
 		},
 		{
+			petName: 'Toby',
+			description: 'Ran away on Friday, near the local Walmart',
+			petType: 'lost',
+			image: require('./assets/PetImages/pup.jpg'),
+			location: {
+				latitude: 40.9138, 
+				longitude: -74.1060,  
+			  },
+
+
+		},
+		
+		{
 			petName: 'Mittens',
 			description: 'Missing cat, please help us find her.',
 			petType: 'lost',
@@ -41,8 +54,19 @@ const App = () => {
 				longitude: -118.2437,  // Sample longitude (Los Angeles)
 			  },
 		},
+		
 	]);
 	const [foundPets, setFoundPets] = useState([
+		{
+			petName: 'Glasses Cat',
+			description: 'Found this cat. Seems to know a thing or two.',
+			petType: 'found',
+			image: require('./assets/PetImages/nerdcat.jpg'),
+			location: {
+				latitude: 38.8898, 
+				longitude: -77.0090,  
+			  },
+		},
 		{
 			petName: 'Fluffy',
 			description: 'Found this dog on the street, very friendly!',

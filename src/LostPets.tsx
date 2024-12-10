@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
 	container: {
 	  flex: 1,
 	  padding: 15,
-	  backgroundColor: '#f5f5f5',
+	  backgroundColor: '#E8EAEF',
 	},
 	petCard: {
 	  marginBottom: 20,
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
 	  width: '100%'
 	},
 	addCommentButton: {
-	  backgroundColor: '#007bff',
+	  backgroundColor: '#C2D5B9',
 	  padding: 10,
 	  borderRadius: 10,
 	  alignItems: 'center',

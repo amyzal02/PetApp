@@ -12,30 +12,28 @@ const PostPet = ({ onPost }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [location, setLocation] = useState(null);
 
-  //To keep the location and watch it change if we change locations
   useEffect(() => {
-	const getLocation = async () => {
-	  const { status } = await Location.requestForegroundPermissionsAsync();
-	  if (status !== 'granted') {
-		Alert.alert('Permission Denied', 'Location permission is required to get your location.');
-		return;
-	  }
-  
-	  // Use watchPositionAsync for continuous location updates
-	  const locationWatcher = await Location.watchPositionAsync(
-		{ accuracy: Location.Accuracy.BestForNavigation, timeInterval: 10000, distanceInterval: 10 },
-		(newLocation) => {
-		  setLocation(newLocation.coords);
-		}
-	  );
-  
-	  // Cleanup function to stop location tracking when the component is unmounted
-	  return () => {
-		locationWatcher.remove();
-	  };
-	};
-  
-	getLocation();
+    const getLocation = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Location permission is required to get your location.');
+        return;
+      }
+
+      // Use watchPositionAsync for continuous location updates
+      const locationWatcher = await Location.watchPositionAsync(
+        { accuracy: Location.Accuracy.BestForNavigation, timeInterval: 10000, distanceInterval: 10 },
+        (newLocation) => {
+          setLocation(newLocation.coords);
+        }
+      );
+
+      return () => {
+        locationWatcher.remove();
+      };
+    };
+
+    getLocation();
   }, []);
 
   const pickImage = async () => {
@@ -51,22 +49,6 @@ const PostPet = ({ onPost }) => {
     }
   };
 
-  //Ethical to ask for permission
-  const getLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Location permission is required to get your location.');
-      return;
-    }
-
-    const locationData = await Location.getCurrentPositionAsync({});
-    setLocation(locationData.coords);
-  };
-
-  useEffect(() => {
-    getLocation();
-  }, []);
-
   const handlePost = () => {
     if (!petName || !description) {
       Alert.alert('Error', 'Please fill in all fields');
@@ -78,21 +60,15 @@ const PostPet = ({ onPost }) => {
         image: selectedImage || petPhoto,
         location,
       });
-      // Reset form
       setPetName('');
       setDescription('');
       setPetType('lost');
       setSelectedImage(null);
-      //setLocation(null);
-	 
     }
   };
 
   return (
-    <ScrollView 
-      contentContainerStyle={styles.scrollContainer}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
         <Text style={styles.title}>Post a Lost or Found Pet</Text>
 
@@ -150,37 +126,25 @@ const PostPet = ({ onPost }) => {
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Pet Photo (Optional)</Text>
-          <TouchableOpacity 
-            style={styles.imagePickerButton} 
-            onPress={pickImage}
-          >
+          <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
             <Text style={styles.imagePickerButtonText}>
               {selectedImage ? 'Change Image' : 'Select Image'}
             </Text>
           </TouchableOpacity>
-          
-          {selectedImage && (
-            <Image 
-              source={{ uri: selectedImage }} 
-              style={styles.imagePreview} 
-            />
-          )}
+
+          {selectedImage && <Image source={{ uri: selectedImage }} style={styles.imagePreview} />}
         </View>
 
         {location && (
           <View style={styles.locationContainer}>
             <Text style={styles.locationLabel}>Current Location</Text>
             <Text style={styles.locationText}>
-              Latitude: {location.latitude.toFixed(4)}
-              {' '} Longitude: {location.longitude.toFixed(4)}
+              Latitude: {location.latitude.toFixed(4)} Longitude: {location.longitude.toFixed(4)}
             </Text>
           </View>
         )}
 
-        <TouchableOpacity 
-          style={styles.postButton} 
-          onPress={handlePost}
-        >
+        <TouchableOpacity style={styles.postButton} onPress={handlePost}>
           <Text style={styles.postButtonText}>Post Pet Alert</Text>
         </TouchableOpacity>
       </View>
@@ -191,7 +155,7 @@ const PostPet = ({ onPost }) => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#E8EAEF',
     paddingVertical: 20,
   },
   container: {
@@ -252,7 +216,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   imagePickerButton: {
-    backgroundColor: '#e6e6e6',
+    backgroundColor: '#C2D5B9',
+    color: 'white',
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',
@@ -284,7 +249,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   postButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#C2D5B9',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
