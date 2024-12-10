@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Linking } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Image as RNImage } from 'react-native';
-import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import * as MailComposer from 'expo-mail-composer';
 
@@ -12,13 +11,6 @@ const getImageUri = (image) => {
     return RNImage.resolveAssetSource(image).uri;
   }
   return image;
-};
-
-// Function to handle opening Google Maps with coordinates
-const openGoogleMaps = (latitude, longitude) => {
-	// Google Maps uses a very simple URL format that's easy 
-    const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
-    Linking.openURL(url).catch(err => console.error('Error opening Google Maps:', err));
 };
 
 const LostPets = ({ pets }) => {
@@ -44,7 +36,7 @@ const LostPets = ({ pets }) => {
     setCommenterName(''); // Clear commenter name input
   };
 
-  // sharing (email or SMS)
+  // sharing (email only, can't find a good way to get SMS to work)
   const handleShare = (pet) => {
 	Alert.alert(
 		'Share via',
