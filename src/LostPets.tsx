@@ -5,6 +5,7 @@ import { Image as RNImage } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as MailComposer from 'expo-mail-composer';
 
+
 // Helper function to get URI from `require()`
 const getImageUri = (image) => {
   if (typeof image === 'number') {
@@ -17,6 +18,8 @@ const LostPets = ({ pets }) => {
   const [newComment, setNewComment] = useState('');
   const [commenterName, setCommenterName] = useState('');
   const [petComments, setPetComments] = useState({}); // Object to hold comments for each pet
+
+
 
   // Handle adding a comment
   const handleAddComment = (petIndex) => {

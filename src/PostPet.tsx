@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect, useRef } from 'react'; 
 import { View, TextInput, Button, StyleSheet, Text, Alert, Image, ScrollView, TouchableOpacity, Platform, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
@@ -11,29 +11,44 @@ const PostPet = ({ onPost }) => {
   const [petType, setPetType] = useState('lost');
   const [selectedImage, setSelectedImage] = useState(null);
   const [location, setLocation] = useState(null);
+  const locationWatcherRef = useRef(null);
 
   useEffect(() => {
-    const getLocation = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'Location permission is required to get your location.');
-        return;
-      }
-
-      // Use watchPositionAsync for continuous location updates
-      const locationWatcher = await Location.watchPositionAsync(
-        { accuracy: Location.Accuracy.BestForNavigation, timeInterval: 10000, distanceInterval: 10 },
-        (newLocation) => {
-          setLocation(newLocation.coords);
-        }
-      );
-
-      return () => {
-        locationWatcher.remove();
-      };
-    };
-
-    getLocation();
+	const getLocation = async () => {
+	  const { status } = await Location.requestForegroundPermissionsAsync();
+	  if (status !== 'granted') {
+		Alert.alert('Permission Denied', 'Location permission is required to get your location.');
+		return;
+	  }
+  
+	  // Remove any existing location watcher
+	  if (locationWatcherRef.current) {
+		locationWatcherRef.current.remove();
+	  }
+  
+	  // Start a new location watcher
+	  locationWatcherRef.current = await Location.watchPositionAsync(
+		{ accuracy: Location.Accuracy.BestForNavigation, timeInterval: 10000, distanceInterval: 10 },
+		(newLocation) => {
+		  setLocation(newLocation.coords);
+		}
+	  );
+  
+	  return () => {
+		if (locationWatcherRef.current) {
+		  locationWatcherRef.current.remove();
+		}
+	  };
+	};
+  
+	getLocation();
+  
+	// Cleanup function to remove location watcher when component unmounts
+	return () => {
+	  if (locationWatcherRef.current) {
+		locationWatcherRef.current.remove();
+	  }
+	};
   }, []);
 
   const pickImage = async () => {
@@ -98,6 +113,7 @@ const PostPet = ({ onPost }) => {
       setDescription('');
       setPetType('lost');
       setSelectedImage(null);
+	  setLocation(null);
     }
   };
 
