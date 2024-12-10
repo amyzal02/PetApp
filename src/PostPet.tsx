@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; 
-import { View, TextInput, Button, StyleSheet, Text, Alert, Image, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Alert, Image, ScrollView, TouchableOpacity, Platform, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import * as Location from 'expo-location';
@@ -52,8 +52,23 @@ const PostPet = ({ onPost }) => {
   const takePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Camera access is required to take a photo.');
-      return;
+      Alert.alert(
+        'Permission Denied', 
+        'Camera access is required to take a photo.',
+        [
+          { text: 'Cancel' },
+          {
+            text: 'Open Settings',
+            onPress: () => {
+              if (Platform.OS === 'ios') {
+                Linking.openURL('app-settings:');
+              } else {
+                Linking.openSettings();
+              }
+            },
+          },
+        ]
+      )
     }
 
     let result = await ImagePicker.launchCameraAsync({
