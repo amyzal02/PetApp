@@ -69,7 +69,7 @@ const App = () => {
 		},
 		{
 			petName: 'Fluffy',
-			description: 'Found this dog on the street, very friendly!',
+			description: 'Found this cat on the street, very friendly!',
 			petType: 'found',
 			image: require('./assets/PetImages/cat2.jpg'),
 			location: {
